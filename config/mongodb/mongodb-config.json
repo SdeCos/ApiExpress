@@ -1,0 +1,8 @@
+{
+  "mongodb": {
+    "server": "127.0.0.1:27018",
+    "database": "ApiExpress",
+    "user": "saul",
+    "password": "1234"
+  }
+}
