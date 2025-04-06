@@ -42,9 +42,9 @@
       <div class="row mb-4">
         <div class="col-12 text-center">
           <h1 class="display-4 fw-bold text-primary">
-            <i class="fas fa-glass-martini-alt me-2"></i>Carta del Bar
+            <i class="fas fa-glass-martini-alt me-2"></i>Gestión de Productos
           </h1>
-          <p class="lead text-muted">Gestión de productos y bebidas</p>
+          <p class="lead text-muted">Administración de bebidas y alimentos</p>
         </div>
       </div>
 
@@ -59,32 +59,19 @@
       <div id="form-container" class="row justify-content-center mb-4 d-none">
         <div class="col-md-8">
           <div class="contenedor-form shadow-sm">
-            <h3 class="mb-4 text-center" id="titulo-form"><i class="fas fa-pencil-alt me-2"></i>Agregar Producto</h3>
+            <h3 class="mb-4 text-center" id="titulo-form"><i class="fas fa-pencil-alt me-2"></i>Nuevo Producto</h3>
             <form id="form-producto">
               <input type="hidden" id="producto-id" value="">
               
               <div class="mb-3">
-                <label for="producto-nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control form-control-lg" id="producto-nombre" placeholder="Ej: Margarita" required>
+                <label for="producto-nombre" class="form-label">Nombre*</label>
+                <input type="text" class="form-control form-control-lg" id="producto-nombre" required>
               </div>
               
               <div class="mb-3">
-                <label for="producto-descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="producto-descripcion" rows="2" placeholder="Descripción del producto..."></textarea>
-              </div>
-              
-              <div class="mb-3">
-                <label for="producto-precio" class="form-label">Precio</label>
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input type="number" class="form-control" id="producto-precio" placeholder="0.00" min="0" step="0.01" required>
-                </div>
-              </div>
-              
-              <div class="mb-3">
-                <label for="producto-categoria" class="form-label">Categoría</label>
+                <label for="producto-categoria" class="form-label">Categoría*</label>
                 <select class="form-select" id="producto-categoria" required>
-                  <option value="" disabled selected>Seleccione categoría</option>
+                  <option value="" disabled selected>Seleccione una categoría</option>
                   <option value="cerveza">Cerveza</option>
                   <option value="coctel">Cóctel</option>
                   <option value="bebida">Bebida sin alcohol</option>
@@ -93,14 +80,27 @@
                 </select>
               </div>
               
-              <div class="mb-3" id="alcohol-group" style="display: none;">
+              <div class="mb-3" id="grupo-alcohol" style="display: none;">
                 <label for="producto-alcohol" class="form-label">Grado alcohólico (%)</label>
-                <input type="number" class="form-control" id="producto-alcohol" placeholder="Ej: 5.5" min="0" max="100" step="0.1">
+                <input type="number" class="form-control" id="producto-alcohol" min="0" max="100" step="0.1">
               </div>
               
               <div class="mb-3">
-                <label for="producto-stock" class="form-label">Stock disponible</label>
-                <input type="number" class="form-control" id="producto-stock" placeholder="Ej: 50" min="0" required>
+                <label for="producto-precio" class="form-label">Precio*</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="producto-precio" min="0" step="0.01" required>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="producto-stock" class="form-label">Stock inicial*</label>
+                <input type="number" class="form-control" id="producto-stock" min="0" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="producto-descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" id="producto-descripcion" rows="2"></textarea>
               </div>
               
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -123,13 +123,9 @@
               <div class="card card-producto h-100 shadow-sm <%= !producto.activo ? 'bg-light' : '' %>" data-id="<%= producto._id %>">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-start mb-3">
-                    <h3 class="nombre-producto h5 mb-0"><%= producto.nombre %></h3>
+                    <h3 class="h5 mb-0"><%= producto.nombre %></h3>
                     <span class="badge badge-precio rounded-pill">$<%= producto.precio.toFixed(2) %></span>
                   </div>
-                  
-                  <% if (producto.descripcion) { %>
-                    <p class="desc-producto text-muted small mb-2"><%= producto.descripcion %></p>
-                  <% } %>
                   
                   <div class="d-flex flex-wrap gap-2 mb-3">
                     <span class="badge badge-categoria <%= 
@@ -148,16 +144,20 @@
                     <% } %>
                     
                     <span class="badge badge-categoria <%= producto.stock > 0 ? 'bg-success' : 'bg-warning' %>">
-                      Stock: <%= producto.stock %>
+                      <%= producto.stock %> disponibles
                     </span>
                   </div>
                   
+                  <% if (producto.descripcion) { %>
+                    <p class="text-muted small mb-3"><%= producto.descripcion %></p>
+                  <% } %>
+                  
                   <div class="d-flex justify-content-end gap-2">
-                    <button class="btn-editar btn btn-sm btn-outline-primary" data-id="<%= producto._id %>">
-                      <i class="fas fa-edit me-1"></i> Editar
+                    <button class="btn btn-sm btn-outline-primary btn-editar" data-id="<%= producto._id %>">
+                      <i class="fas fa-edit me-1"></i>Editar
                     </button>
-                    <button class="btn-eliminar btn btn-sm btn-outline-danger" data-id="<%= producto._id %>">
-                      <i class="fas fa-trash me-1"></i> <%= producto.activo ? 'Desactivar' : 'Activar' %>
+                    <button class="btn btn-sm btn-outline-danger btn-eliminar" data-id="<%= producto._id %>">
+                      <i class="fas fa-trash me-1"></i><%= producto.activo ? 'Desactivar' : 'Activar' %>
                     </button>
                   </div>
                 </div>
@@ -169,7 +169,7 @@
             <div class="estado-vacio">
               <i class="fas fa-glass-martini-alt fa-4x mb-3"></i>
               <h3 class="h4">No hay productos registrados</h3>
-              <p class="text-muted">Haz clic en "Agregar Producto" para comenzar</p>
+              <p class="text-muted">Comience agregando nuevos productos</p>
             </div>
           </div>
         <% } %>
@@ -179,7 +179,21 @@
     <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Archivo JS adaptado para productos -->
+    <!-- Archivo JavaScript para la gestión de productos -->
     <script src="/js/productos.js"></script>
+    
+    <script>
+      // Mostrar/ocultar campo de alcohol según categoría
+      document.getElementById('producto-categoria').addEventListener('change', function() {
+        const esAlcoholico = ['cerveza', 'coctel'].includes(this.value);
+        document.getElementById('grupo-alcohol').style.display = esAlcoholico ? 'block' : 'none';
+        
+        if (esAlcoholico) {
+          document.getElementById('producto-alcohol').required = true;
+        } else {
+          document.getElementById('producto-alcohol').required = false;
+        }
+      });
+    </script>
   </body>
 </html>
