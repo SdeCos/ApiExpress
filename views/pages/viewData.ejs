@@ -2,15 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Data</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>View Data</h1>
-    <ul>
-        <% data.forEach(item => { %>
-            <li><%= item.name %> - <%= item.email %></li>
-        <% }) %>
-    </ul>
-    <a href="/">Back to Home</a>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Data Viewer</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/addData">Add Data</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/deleteData">Delete Data</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="mt-5">
+            <h1>View Data</h1>
+            <div class="form-group">
+                <label for="collectionSelect">Select Collection:</label>
+                <select class="form-control" id="collectionSelect" onchange="changeCollection()">
+                    <% collections.forEach(collection => { %>
+                        <option value="<%= collection %>"><%= collection %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <table class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <% if (data.length > 0) { %>
+                            <% Object.keys(data[0]).forEach(key => { %>
+                                <th><%= key %></th>
+                            <% }) %>
+                        <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% data.forEach(item => { %>
+                        <tr>
+                            <% Object.values(item).forEach(value => { %>
+                                <td><%= value %></td>
+                            <% }) %>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function changeCollection() {
+            const collection = document.getElementById('collectionSelect').value;
+            window.location.href = `/viewData?collection=${collection}`;
+        }
+    </script>
 </body>
 </html>

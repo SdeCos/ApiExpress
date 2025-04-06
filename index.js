@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001; // Changed port to 3001
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,28 +21,23 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB:", err));
 
-// Define a schema
-const dataSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-});
-
-// Define a model
-const Data = mongoose.model("Data", dataSchema);
-
 // Routes
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.get("/viewData", (req, res) => {
-  Data.find()
-    .then((data) => {
-      res.render("viewData", { data });
-    })
-    .catch((err) => {
-      res.status(400).send("Unable to fetch data from database");
-    });
+app.get("/viewData", async (req, res) => {
+  const conn = mongoose.connection;
+  const collections = await conn.db.listCollections().toArray();
+  const collectionNames = collections.map((col) => col.name);
+  const collectionName = req.query.collection || collectionNames[0];
+
+  try {
+    const data = await conn.db.collection(collectionName).find().toArray();
+    res.render("viewData", { data, collections: collectionNames });
+  } catch (err) {
+    res.status(400).send("Unable to fetch data from database");
+  }
 });
 
 app.get("/addData", (req, res) => {
@@ -51,7 +46,7 @@ app.get("/addData", (req, res) => {
 
 app.post("/addData", (req, res) => {
   const { name, email } = req.body;
-  const newData = new Data({ name, email });
+  const newData = new mongoose.models.User({ name, email });
 
   newData
     .save()
@@ -69,7 +64,7 @@ app.get("/deleteData", (req, res) => {
 app.post("/deleteData", (req, res) => {
   const { id } = req.body;
 
-  Data.findByIdAndRemove(id)
+  mongoose.models.User.findByIdAndRemove(id)
     .then(() => res.redirect("/viewData"))
     .catch((err) => {
       console.error("Error deleting from database:", err);
