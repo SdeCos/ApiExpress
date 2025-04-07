@@ -1,8 +1,8 @@
 {
-  "mongodb": {
-    "server": "127.0.0.1:27018",
-    "database": "ApiExpress",
-    "user": "saul",
-    "password": "1234"
+  "mongo": {
+    "servidor": "127.0.0.1:27018",
+    "basedatos": "ApiExpress",
+    "usuario": "saul",
+    "contrasena": "1234"
   }
 }
