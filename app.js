@@ -22,10 +22,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-MongoDBUtil.conectar();
+// Connect to MongoDB
+MongoDBUtil.conectar()
+  .then(() => {
+    console.log("MongoDB connection established successfully.");
+  })
+  .catch((error) => {
+    console.error("Failed to connect to MongoDB:", error);
+  });
 
+// Define routes
 app.use("/users", UserController);
-app.use("/productos", productosRouter);
+app.use("/", productosRouter);
 
 app.get("/", function (req, res) {
   var pkg = require(path.join(__dirname, "package.json"));

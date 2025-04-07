@@ -1,42 +1,25 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+const ProductoModel = require("../modules/producto/producto.modelo");
 
-// Dummy data for productos
-var productos = [
-  {
-    _id: 1,
-    nombre: "Producto 1",
-    precio: 10.0,
-    categoria: "cerveza",
-    gradoAlcohol: 5,
-    stock: 20,
-    descripcion: "Descripción del producto 1",
-    activo: true,
-  },
-  {
-    _id: 2,
-    nombre: "Producto 2",
-    precio: 15.5,
-    categoria: "coctel",
-    gradoAlcohol: 7,
-    stock: 15,
-    descripcion: "Descripción del producto 2",
-    activo: false,
-  },
-  {
-    _id: 3,
-    nombre: "Producto 3",
-    precio: 8.0,
-    categoria: "bebida",
-    stock: 30,
-    descripcion: "Descripción del producto 3",
-    activo: true,
-  },
-];
+// GET all products and render the productos page
+router.get("/productos", async (req, res) => {
+  try {
+    const productos = await ProductoModel.find();
+    res.render("pages/productos", { title: "Productos", productos });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching products" });
+  }
+});
 
-/* GET productos page. */
-router.get("/", function (req, res, next) {
-  res.render("pages/productos", { title: "Productos", productos: productos });
+// API endpoint to get all products
+router.get("/api/productos", async (req, res) => {
+  try {
+    const productos = await ProductoModel.find();
+    res.status(200).json(productos);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching products" });
+  }
 });
 
 module.exports = router;
